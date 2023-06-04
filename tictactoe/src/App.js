@@ -50,28 +50,29 @@ function Board({ xIsNext, squares, onPlay }) {
   //
   // Returns:
   //  board (JSX): board consisting of Square
-  //  TODO: Figure out how to make this more readable / maps / 
   function makeBoard(rowSize, colSize) {
-    const boardArray = [];
-    for (const rowIndex of Array(rowSize).keys()) {
-      const row = [];
-      for (const colIndex of Array(colSize).keys()) {
-        const offset = rowIndex * colSize + colIndex;
-        row.push(
-          <Square
-            key={offset}
-            value={squares[offset]}
-            onSquareClick={() => handleClick(offset)}
-          />
+    return Array(rowSize)
+      .fill(null)
+      .map((_, rowIndex) => {
+        // For each row populate columns
+        const row = Array(colSize)
+          .fill(null)
+          .map((_, colIndex) => {
+            const offset = rowIndex * colSize + colIndex;
+            return (
+              <Square
+                key={offset}
+                value={squares[offset]}
+                onSquareClick={() => handleClick(offset)}
+              />
+            );
+          });
+        return (
+          <div key={rowIndex} className="board_row">
+            {row}
+          </div>
         );
-      }
-      boardArray.push(
-        <div key={rowIndex} className="board-row">
-          {row}
-        </div>
-      );
-    }
-    return boardArray;
+      });
   }
 
   return (
