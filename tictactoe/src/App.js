@@ -1,3 +1,13 @@
+/**
+ * Challenges:
+ *  1. For the current move only, show “You are at move #…” instead of a button.
+ *  2. Rewrite Board to use two loops to make the squares instead of hardcoding them.
+ *  3. Add a toggle button that lets you sort the moves in either ascending or descending order.
+ *  4. When someone wins, highlight the three squares that caused the win (and when no one wins, display a message about the result being a draw).
+ *  5. Display the location for each move in the format (row, col) in the move history list.
+ *
+ */
+
 import { useState } from "react";
 
 import "./App.css";
@@ -14,6 +24,7 @@ function Square({ value, onSquareClick }) {
 }
 
 function Board({ xIsNext, squares, onPlay }) {
+  // Updates the board when square is clicked
   function handleClick(i) {
     const nextSquares = [...squares];
 
@@ -22,32 +33,51 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  let status;
-  const winner = calculateWinner(squares);
-  winner
-    ? (status = "Winner: " + winner)
-    : (status = "Next Player: " + (xIsNext ? "X" : "O"));
+  // Displays status of game board
+  //
+  // Returns:
+  //  status(str): the status of the game (winner or player turn)
+  function displayStatus() {
+    let status;
+    const winner = calculateWinner(squares);
+    winner
+      ? (status = "Winner: " + winner)
+      : (status = "Next Player: " + (xIsNext ? "X" : "O"));
+    return status;
+  }
+
+  // Makes the game board consisting of the square component
+  //
+  // Returns:
+  //  board (JSX): board consisting of Square
+  //  TODO: Figure out how to make this more readable / maps / 
+  function makeBoard(rowSize, colSize) {
+    const boardArray = [];
+    for (const rowIndex of Array(rowSize).keys()) {
+      const row = [];
+      for (const colIndex of Array(colSize).keys()) {
+        const offset = rowIndex * colSize + colIndex;
+        row.push(
+          <Square
+            key={offset}
+            value={squares[offset]}
+            onSquareClick={() => handleClick(offset)}
+          />
+        );
+      }
+      boardArray.push(
+        <div key={rowIndex} className="board-row">
+          {row}
+        </div>
+      );
+    }
+    return boardArray;
+  }
 
   return (
     <>
-      <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      <div className="status">{displayStatus()}</div>
+      {makeBoard(3, 3)}
     </>
   );
 }
@@ -77,7 +107,12 @@ export default function Game() {
 
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+        {/* Challenge 1 */}
+        {!(move === currentMove) ? (
+          <button onClick={() => jumpTo(move)}>{description}</button>
+        ) : (
+          <p>You are at move #{currentMove}</p>
+        )}
       </li>
     );
   });
