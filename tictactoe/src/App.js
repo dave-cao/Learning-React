@@ -29,6 +29,9 @@ function Board({ xIsNext, squares, onPlay }) {
     const nextSquares = [...squares];
 
     if (squares[i] || calculateWinner(squares)) return; // return early if square already clicked
+
+    // TODO IF CALCULATE WINNER THEN SHOW WINNER
+    //
     xIsNext ? (nextSquares[i] = "X") : (nextSquares[i] = "O");
     onPlay(nextSquares);
   }
@@ -50,6 +53,7 @@ function Board({ xIsNext, squares, onPlay }) {
   //
   // Returns:
   //  board (JSX): board consisting of Square
+  //  CHALLENGE TWO
   function makeBoard(rowSize, colSize) {
     return Array(rowSize)
       .fill(null)
@@ -88,6 +92,7 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = !(currentMove % 2);
   const currentSquares = history[currentMove];
+  const [isAscending, setIsAscending] = useState(true);
 
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
@@ -98,6 +103,11 @@ export default function Game() {
   function jumpTo(nextMove) {
     setHistory(history.slice(0, nextMove + 1));
     setCurrentMove(nextMove);
+  }
+
+  function toggleMoveOrder() {
+    // toggle sort
+    setIsAscending(!isAscending);
   }
 
   const moves = history.map((squares, move) => {
@@ -118,6 +128,8 @@ export default function Game() {
     );
   });
 
+  if (!isAscending) moves.reverse(); // Challenge 3
+
   return (
     <div className="game">
       <div className="game-board">
@@ -125,6 +137,7 @@ export default function Game() {
       </div>
       <div className="game-info">
         <ol>{moves}</ol>
+        <button onClick={toggleMoveOrder}>Change move order.</button>
       </div>
     </div>
   );
