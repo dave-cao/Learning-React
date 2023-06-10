@@ -64,6 +64,7 @@ function Board({ xIsNext, squares, onPlay }) {
           .map((_, colIndex) => {
             const offset = rowIndex * colSize + colIndex;
             return (
+              // TODO make a ternary operator here for challenge 4?
               <Square
                 key={offset}
                 value={squares[offset]}
@@ -157,6 +158,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      console.log(lines[i]);
       return squares[a];
     }
   }
