@@ -12,12 +12,12 @@ import { useState } from "react";
 
 import "./App.css";
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, style }) {
   // When button is clicked
 
   // Returns a button
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button style={style} className="square" onClick={onSquareClick}>
       {value}
     </button>
   );
@@ -28,7 +28,7 @@ function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
     const nextSquares = [...squares];
 
-    if (squares[i] || calculateWinner(squares)) return; // return early if square already clicked
+    if (squares[i] || calculateWinner(squares)[0]) return; // return early if square already clicked
 
     // TODO IF CALCULATE WINNER THEN SHOW WINNER
     //
@@ -42,9 +42,12 @@ function Board({ xIsNext, squares, onPlay }) {
   //  status(str): the status of the game (winner or player turn)
   function displayStatus() {
     let status;
-    const winner = calculateWinner(squares);
+    const checkTie = squares.every((square) => square !== null);
+    const winner = calculateWinner(squares)[0];
     winner
       ? (status = "Winner: " + winner)
+      : checkTie
+      ? (status = "It's a draw!")
       : (status = "Next Player: " + (xIsNext ? "X" : "O"));
     return status;
   }
@@ -55,6 +58,8 @@ function Board({ xIsNext, squares, onPlay }) {
   //  board (JSX): board consisting of Square
   //  CHALLENGE TWO
   function makeBoard(rowSize, colSize) {
+    const nextSquares = [...squares];
+    const [_, winnerPositions] = calculateWinner(nextSquares);
     return Array(rowSize)
       .fill(null)
       .map((_, rowIndex) => {
@@ -64,12 +69,21 @@ function Board({ xIsNext, squares, onPlay }) {
           .map((_, colIndex) => {
             const offset = rowIndex * colSize + colIndex;
             return (
-              // TODO make a ternary operator here for challenge 4?
-              <Square
-                key={offset}
-                value={squares[offset]}
-                onSquareClick={() => handleClick(offset)}
-              />
+              // CHALLENGE 4
+              winnerPositions && winnerPositions.includes(offset) ? (
+                <Square
+                  style={{ backgroundColor: "red" }}
+                  key={offset}
+                  value={squares[offset]}
+                  onSquareClick={() => handleClick(offset)}
+                />
+              ) : (
+                <Square
+                  key={offset}
+                  value={squares[offset]}
+                  onSquareClick={() => handleClick(offset)}
+                />
+              )
             );
           });
         return (
@@ -158,9 +172,8 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      console.log(lines[i]);
-      return squares[a];
+      return [squares[a], lines[i]];
     }
   }
-  return null;
+  return [null, null];
 }
