@@ -1,0 +1,3 @@
+[submodule "react-tictactoe"]
+	path = react-tictactoe
+	url = git@github.com:dave-cao/react-tictactoe.git
