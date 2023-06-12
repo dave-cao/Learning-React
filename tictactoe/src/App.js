@@ -11,6 +11,7 @@
 import { useState } from "react";
 
 import "./App.css";
+import Footer from "./Footer";
 
 function Square({ value, onSquareClick, style }) {
   // When button is clicked
@@ -130,7 +131,7 @@ export default function Game() {
 
   const moves = history.map((squares, move) => {
     let description;
-    const [row, col] = position[move];
+    let [row, col] = position[move];
     move > 0
       ? (description = `Go to move # ${move}. (${row + 1}, ${col + 1})`)
       : (description = "Go to game start");
@@ -141,8 +142,16 @@ export default function Game() {
         {!(move === currentMove) ? (
           <button onClick={() => jumpTo(move)}>{description}</button>
         ) : (
-          <p>
-            You are at move #{currentMove} ({row + 1}, {col + 1})
+          <p className="currentMove">
+            You are at move #{currentMove} (
+            {row !== null && col !== null ? (
+              <span>
+                {row + 1}, {col + 1}
+              </span>
+            ) : (
+              <span>Make a move!</span>
+            )}
+            )
           </p>
         )}
       </li>
@@ -152,14 +161,22 @@ export default function Game() {
   if (!isAscending) moves.reverse(); // Challenge 3
 
   return (
-    <div className="game">
-      <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+    <div className="App">
+      <div className="game">
+        <div className="game-board">
+          <Board
+            xIsNext={xIsNext}
+            squares={currentSquares}
+            onPlay={handlePlay}
+          />
+        </div>
+        <div className="game-info">
+          <ol>{moves}</ol>
+          <button onClick={toggleMoveOrder}>Change move order.</button>
+        </div>
       </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
-        <button onClick={toggleMoveOrder}>Change move order.</button>
-      </div>
+
+      <Footer />
     </div>
   );
 }
