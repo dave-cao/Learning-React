@@ -2,31 +2,36 @@ import "./App.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-function NewQuoteButton({ handleClick }) {
+function NewQuoteButton({ handleClick, color }) {
+  console.log(color);
+  color === "#f2f2f2" ? (color = "#5A5A5A") : (color = color);
   return (
-    <>
-      <button onClick={handleClick}>New Quote</button>
-    </>
+    <div className="text-center mt-auto">
+      <button
+        className="btn btn-primary btn-lg btn-block"
+        onClick={handleClick}
+        style={{ backgroundColor: color }}
+      >
+        New Quote
+      </button>
+    </div>
   );
 }
 
 function Quote({ quote }) {
   return (
     <>
-      <div className="quote-text">
-        <em>{quote.content}</em>
-      </div>
-      <div className="quote-author">
-        <em>{quote.author}</em>
+      <div className="quote-text text-center m-2">❝ {quote.content} ❞</div>
+      <div className="quote-author text-end mb-4">
+        <em>~ {quote.author}</em>
       </div>
     </>
   );
 }
 
-function QuoteBox() {
+function QuoteBox({ changeBackgroundColor, backgroundColor }) {
   const [quote, setQuote] = useState({});
-
-  const update = () => {
+  const updateQuote = () => {
     axios
       .get("https://api.quotable.io/quotes/random")
       .then((data) => {
@@ -39,26 +44,61 @@ function QuoteBox() {
       });
   };
 
-  useEffect(update, []);
+  useEffect(updateQuote, []);
 
   return (
     <div
-      className="quote-box"
-      style={{ border: "4px solid black", height: "40vh" }}
+      className="quote-box d-flex border m-4 flex-column justify-content-between"
+      style={{
+        minHeight: "40vh",
+        width: "600px",
+      }}
     >
-      <Quote quote={quote} />
-      <NewQuoteButton handleClick={update} />
+      <div className="container m-auto">
+        <Quote quote={quote} color={backgroundColor} />
+        <NewQuoteButton
+          color={backgroundColor}
+          handleClick={() => {
+            updateQuote();
+            changeBackgroundColor();
+          }}
+        />
+      </div>
     </div>
   );
 }
 
 function App() {
+  const [backgroundColor, setBackgroundColor] = useState("#f2f2f2");
+
+  const changeBackgroundColor = () => {
+    const colorIndex = Math.floor(Math.random() * COLORS.length);
+    const color = COLORS[colorIndex];
+    setBackgroundColor(color);
+  };
+
   return (
-    <>
-      <QuoteBox />
-    </>
+    <div
+      className="page-container d-flex align-items-center justify-content-center"
+      style={{ height: "100vh", backgroundColor: backgroundColor }}
+    >
+      <QuoteBox
+        changeBackgroundColor={changeBackgroundColor}
+        backgroundColor={backgroundColor}
+      />
+    </div>
   );
 }
+
+const COLORS = [
+  "#ff7f50",
+  "#c2b97f",
+  "#2f2f2f",
+  "#29ab87",
+  "#114b5f",
+  "#e0b0ff",
+  "#5d2f27",
+];
 
 export default App;
 

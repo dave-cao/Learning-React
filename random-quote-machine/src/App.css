@@ -1,0 +1,43 @@
+/* App.css */
+
+* {
+  transition: background-color 2s ease;
+}
+
+.quote-box {
+  border: 4px solid #333;
+  background-color: #ffffff;
+  padding: 20px 40px; /* Added vertical (20px) and horizontal (40px) padding */
+  border-radius: 10px;
+}
+
+.quote-text {
+  color: #333333;
+  padding-bottom: 10px; /* Added 10px padding to the bottom */
+  font-size: 2rem;
+}
+
+.quote-author {
+  color: #777777;
+  padding-top: 10px; /* Added 10px padding to the top */
+}
+
+.btn-primary {
+  background-color: #84a9ac; /* Changed to a lighter color */
+  border-color: #84a9ac; /* Same color as background for a seamless look */
+  border-radius: 5px; /* Added border-radius to round out the button */
+  font-size: 14px; /* Decreased font size for a smaller button */
+  padding: 8px 16px; /* Adjusted padding for a smaller button */
+  margin-top: 20px;
+  transition: background-color 2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #618488; /* Changed to a slightly darker color on hover */
+  border-color: #618488;
+}
+
+/* Add the following styles to override Bootstrap's default button styles for the active state */
+
+.btn-primary {
+}
